@@ -1,4 +1,4 @@
-Time Server
+Time Server  [![Build Status](https://travis-ci.org/101bits/akka-http-time-server.svg?branch=master)](https://travis-ci.org/101bits/akka-http-time-server)
 --
 
 The purpose of the project is to learn building a simple HTTP REST API that returns server time. The focus is also to write tests as I learn more about `akka-http` and `akka` in general.
