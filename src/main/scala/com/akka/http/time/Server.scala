@@ -16,12 +16,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val timeFormat = jsonFormat1(Time)
 }
 
-object Server extends App with JsonSupport {
-  implicit val system = ActorSystem("timeServer")
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val ec = system.dispatcher
 
-
+object Server extends JsonSupport {
   val route =
     pathSingleSlash {
       get {
@@ -31,13 +27,19 @@ object Server extends App with JsonSupport {
       }
     }
 
-  val serverFuture = Http().bindAndHandle(route, "localhost", 8080)
+  def main(args: Array[String]) {
+    implicit val system = ActorSystem("timeServer")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    implicit val ec = system.dispatcher
 
-  println(s"TimeServer is running at http://localhost:8080\nPress RETURN to stop ...")
-  readLine()
+    val serverFuture = Http().bindAndHandle(route, "localhost", 8080)
 
-  serverFuture
-    .flatMap(_.unbind())
-    .onComplete(_ => system.terminate())
+    println(s"TimeServer is running at http://localhost:8080\nPress RETURN to stop ...")
+    readLine()
+
+    serverFuture
+      .flatMap(_.unbind())
+      .onComplete(_ => system.terminate())
+  }
 }
 
